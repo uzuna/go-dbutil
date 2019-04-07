@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "description": "DataBase configure",
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/dbconfig"
+  },
+  "definitions": {
+    "dbconfig": {
+      "type": "object",
+      "required": [
+        "name",
+        "driver",
+        "host",
+        "user",
+        "pass",
+        "tz",
+        "max_open_conn"
+      ],
+      "properties": {
+        "name": {
+          "description": "The unique identifier for a config",
+          "type": "string"
+        },
+        "driver": {
+          "description": "The driver name of golang sql driver lib",
+          "type": "string",
+          "default": "mysql",
+          "enum": [
+            "mysql",
+            "oracle",
+            "sqlserver"
+          ]
+        },
+        "host": {
+          "description": "The name of DataBase and port",
+          "type": "string",
+          "examples": [
+            "localhost:3306"
+          ],
+          "pattern": "^[a-zA-Z\\d\\.\\-\\_]+(\\:\\d{1,5})?(\\/[a-zA-Z\\d\\.]+)?$",
+          "format": "hostname"
+        },
+        "user": {
+          "description": "The name of account for connect to DataBase",
+          "type": "string"
+        },
+        "pass": {
+          "description": "The password of account for connect to DataBase",
+          "type": "string"
+        },
+        "database": {
+          "description": "Default open database. Enabled when use  mysql",
+          "type": "string"
+        },
+        "tz": {
+          "description": "Set DataBase timzone. It is to use to add the offset for datetime- like column without timezone",
+          "type": "string",
+          "default": "UTC",
+          "examples": [
+            "UTC",
+            "Asia/Tokyo"
+          ]
+        },
+        "max_open_conn": {
+          "description": "Max Open connections. It is likely the number of max concurrency of sql execute",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        },
+        "max_idle_conn": {
+          "description": "Max Idle connections. It is likely the number of max concurrency of sql execute. when 0 then no limit",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        },
+        "max_lifetime": {
+          "description": "Idle connection lifetime(msec)",
+          "type": "integer",
+          "default": 1000,
+          "minimum": 1
+        },
+        "params": {
+          "description": "Custom Parameter (MySQL only) 任意のパラメータ名(Set <name> のnameと同じ)",
+          "type": "object",
+          "patternProperties": {
+            "^.+": {
+              "$ref": "#/definitions/parameter_value"
+            }
+          }
+        }
+      }
+    },
+    "parameter_value": {
+      "anyOf": [
+        {
+          "description": "数字",
+          "type": "number"
+        },
+        {
+          "description": "文字列",
+          "type": "string"
+        },
+        {
+          "description": "On/Off",
+          "type": "boolean"
+        }
+      ]
+    }
+  }
+}
